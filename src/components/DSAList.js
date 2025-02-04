@@ -20,8 +20,23 @@ export default function DSAList() {
         setOverallProgress(findOverallProgress(dsaList));
     }, [dsaList]);
 
+    const updateAllList = (index) => {
+        const newDSAList = [...dsaList];
+        const section = newDSAList[index];
+        const isAllCompleted = section.subsections.every((subsection) => subsection.completed);
+    
+        section.subsections.forEach((subsection) => {
+            subsection.completed = !isAllCompleted;
+        });
+    
+        section.progress = findSectionProgress(section.subsections);
+        setDsaList(newDSAList);
+        localStorage.setItem("dsalist", JSON.stringify(newDSAList));
+    };
+
     const updateList = (index, indexOfSub) => {
         const newDSAList = [...dsaList];
+        console.log(newDSAList, "newDsaList");
         newDSAList[index].subsections[indexOfSub].completed =
             !newDSAList[index].subsections[indexOfSub].completed;
         newDSAList[index].progress = findSectionProgress(
@@ -49,6 +64,7 @@ export default function DSAList() {
                     <Section
                         index={index}
                         updateList={updateList}
+                        updateAllList={() => updateAllList(index)}
                         key={index}
                         section={section}
                     />
